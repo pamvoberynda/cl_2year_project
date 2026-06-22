@@ -59,3 +59,37 @@ def separate_homonyms(lexicon_artcl: str) -> tuple:
             newlexicon[homonym_title] = homonym_part
     return newlexicon
 
+ONLY_CYRILLIC = r'[а-яА-ЯєЄіІїЇґҐ’]'
+
+def is_equal(str1: str, str2: str) -> bool:
+    value = False
+    str1 = re.search(fr"{ONLY_CYRILLIC}+", str1).group(0) if re.search(fr"{ONLY_CYRILLIC}+", str1) else str()
+    str2 = re.search(fr"{ONLY_CYRILLIC}+", str2).group(0) if re.search(rf"{ONLY_CYRILLIC}+", str2) else str()
+    if str1 == str2:
+        value = True
+    return value
+
+def remove_numbers_in_str(str1: str) -> str:
+    str2 = str() #output
+    str2 = re.sub(r"\d", " ", str1)
+    return str2
+
+
+def unite_subarticles(lexicon: dict) -> dict:
+    newlex = []
+    lenght = len(lexicon)
+    i = int()
+    lex = list(lexicon.items())
+    has_next = (i+1<lenght) 
+    while i < lenght:
+        if re.search(r"\d", lex[i][0]) and has_next: #check whether its homonyms
+            if is_equal(lex[i][0], lex[i+1][0]): #checking whether two keys are identical
+                lex_val = remove_numbers_in_str(lex[i][1]) + " " + remove_numbers_in_str(lex[i+1][1])
+                lex_key = re.search(fr"{ONLY_CYRILLIC}+", lex[i][0]).group(0)
+                newlex.append((lex_key, lex_val))
+                i += 1 #skip for next homonym
+        else:
+            newlex.append((lex[i][0], lex[i][1]))
+        i+=1
+    return dict(newlex)
+

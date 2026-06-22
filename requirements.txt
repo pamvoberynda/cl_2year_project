@@ -1,0 +1,4 @@
+matplotlib==3.11.0
+networkx==3.2.1
+numpy==2.5.0
+stanza==1.11.0
